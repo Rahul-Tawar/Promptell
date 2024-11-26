@@ -37,7 +37,7 @@ const Nav = () => {
     <div className="sm:flex hidden">
     {session?.user? (
       <div className="flex gap-6 items-center justify-center">
-        <Link href='/create-prompts' className="btn-grad">
+        <Link href='/create-prompts' className="text-black bg-white border-2 border-black rounded-full py-1 px-6 h-10 text-center flex justify-center items-center font-inter font-bold">
           Create Prompt
         </Link>
         <button 

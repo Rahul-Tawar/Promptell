@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const Form = ({type, post, setPost, submitting, handleSubmit}) => {
+const Form = ({post, setPost, submitting, handleSubmit}) => {
   
   return (
     <section className='place-content-center'>
@@ -8,7 +8,7 @@ const Form = ({type, post, setPost, submitting, handleSubmit}) => {
         <span className='pink_gradient'>Create Prompt</span>
       </h1>
       <p className='m-3 text-center max-w-md anton-regular'>
-        {type} and share amazing prompts with the AI World, and let your
+        Create and share amazing prompts with the AI World, and let your
         imagination run wild with any AI-powered platform
       </p>
       {/* form section */}
@@ -58,7 +58,7 @@ const Form = ({type, post, setPost, submitting, handleSubmit}) => {
             disabled={submitting}
             className='px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white'
           >
-            {submitting ? `${type}ing...` : type}
+            {submitting ? 'Creating' : 'Create'}
           </button>
         </div>
       </form>
