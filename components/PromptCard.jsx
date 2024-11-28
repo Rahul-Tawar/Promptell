@@ -1,10 +1,7 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import {useState} from "react"
 import Image from "next/image"
-import { useSession } from "next-auth/react"
-import { usePathname, useRouter } from "next/navigation"
-
 
 const PromptCard = ({key, post, handleTagClick, handleEdit, handleDelete}) => {
   console.log(post)
@@ -21,7 +18,7 @@ const PromptCard = ({key, post, handleTagClick, handleEdit, handleDelete}) => {
                     <div className="relative">
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-sm"></div>
                         <img
-                          src={post?.creator?.image}
+                          src={post?.creator.image}
                           alt={post?.creator?.username}
                           className="relative w-12 h-12 rounded-full object-cover border-2 border-white/50"
                         />

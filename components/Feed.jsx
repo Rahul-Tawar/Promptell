@@ -26,6 +26,7 @@ const Feed = () => {
   },
   [])
  
+  console.log(typeof(posts))
 
   return (
     <div>

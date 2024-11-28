@@ -18,7 +18,6 @@ const Nav = () => {
     }
     setUpProviders()
   },[])
-
   
   return (
     <nav className="w-[80vw] mb-16 flex justify-between pt-4">
@@ -49,7 +48,7 @@ const Nav = () => {
           className="outline_btn">
             Sign Out
         </button>
-        <Link href='/profile'>
+        <Link href={`/users/${session?.user.name}`}>
           <Image
             src={session?.user.image}
             width={30}
