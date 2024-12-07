@@ -10,17 +10,17 @@ export const metadata = {
 const layout = ({children}) => {
   return (
    <Provider>
-      <html lang='en'>
-        <body>
-            <div className="main">
-                
-            </div>
-            <main className='app'>
-                <Nav/>
-                {children}
-            </main>
-        </body>
-    </html>
+        <html lang='en'>
+            <body>
+                <div className="main">
+                    
+                </div>
+                <main className='app'>
+                    <Nav/>
+                    {children}
+                </main>
+            </body>
+        </html>
    </Provider>
   )
 }

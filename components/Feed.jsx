@@ -9,6 +9,7 @@ const Feed = () => {
   const [searchText, setSearchText] = useState('')
   const [posts, setPosts] = useState([])
   
+  // handling search
   const handleSearchChange = (e) => {
       
   }
@@ -26,11 +27,10 @@ const Feed = () => {
   },
   [])
  
-  console.log(typeof(posts))
-
   return (
     <div>
       <section className='flex flex-col gap-10'>
+        {/* search bar */}
         <SearchBar/>
         {/* latest prompts */}
         <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-2">
@@ -46,13 +46,21 @@ const Feed = () => {
 }
 
 const PromptCardList = ({data, handleTagClick}) => {
+  const onlike = () => {
+    alert('Liked')
+  };
+
+  const onCopy = () => {
+    alert('Copied')
+  };
   return (
     <div className='mt-15'>
     {data.map((post) => (
         <PromptCard
           key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
+          prompt={post}
+          onlike={onlike}
+          onCopy={onCopy}
         />
       ))}
     </div>  

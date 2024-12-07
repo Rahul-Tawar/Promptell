@@ -1,8 +1,10 @@
 import Feed from "@components/Feed"
+import { GradientBackground } from "@components/GradientBackground"
 
 const Page = () => {
  return (
    <>
+   <GradientBackground>
       <section className="w-full flex-center flex-col ">
          <h1 className="head_text text-center" >
             Discover and share
@@ -16,6 +18,7 @@ const Page = () => {
       </section>  
       {/* feed */}
       <Feed/>
+   </GradientBackground>
    </>
 
    )
