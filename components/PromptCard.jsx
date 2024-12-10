@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Heart, Copy, CheckCheck } from 'lucide-react';
 import { UserAvatar } from '@components/userAvatar';
 import { useCopyFeedback } from '@hooks/useCopyPrompt';
 
 export default function PromptCard({ prompt, onLike, onCopy }) {
   const { copied, handleCopy } = useCopyFeedback(() => onCopy(prompt.content));
+  const [likeCount, setLikeCount] = useState(0)
 
   return (
     <div className="relative group">
@@ -32,7 +33,7 @@ export default function PromptCard({ prompt, onLike, onCopy }) {
                 } hover:text-pink-500 transition-colors`}
               >
                 <Heart size={18} fill={prompt.isLiked ? 'currentColor' : 'none'} />
-                <span>{prompt.likes}</span>
+                <span>{likeCount}</span>
               </button>
               <button
                 onClick={handleCopy}
