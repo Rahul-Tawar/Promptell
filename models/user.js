@@ -13,7 +13,25 @@ const userSchema = new Schema({
     },
     image: {
         type: String
-    }
+    },
+    createdPrompts:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Prompt',
+        },
+    ],
+    likedPrompts:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Prompt',
+        },
+    ],
+    savedPrompts:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Prompt',
+        }
+    ],
 })
 
 const User = models.User || model('User', userSchema)
