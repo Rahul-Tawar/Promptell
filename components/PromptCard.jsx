@@ -27,7 +27,7 @@ export default function PromptCard({ prompt, onLike, onCopy }) {
             <span className="text-sm">{new Date("2024-10-10").toLocaleDateString()}</span>
             <div className="flex gap-4">
               <button
-                onClick={() => onLike(prompt.id)}
+                onClick={() => onLike}
                 className={`flex items-center gap-1 ${
                   prompt.isLiked ? 'text-pink-500' : 'text-gray-400'
                 } hover:text-pink-500 transition-colors`}
