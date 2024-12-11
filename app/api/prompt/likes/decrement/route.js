@@ -34,7 +34,11 @@ export const POST = async(req, res) => {
             
             // Remove the user from the prompt's likedByUsers array
             prompt.likedByUsers = prompt.likedByUsers.filter(id => id.toString() !== userId.toString());
-            prompt.likes -= 1; // Decrement the like count
+            
+            // Decrement the like count
+            if (!prompt.likes <= 0 ) {
+                prompt.likes -= 1;
+            }
             await prompt.save();
     
             res.status(200).json({ message: "Prompt unliked successfully", likes: prompt.likes });
