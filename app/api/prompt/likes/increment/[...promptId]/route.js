@@ -2,7 +2,7 @@ import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 import User from "@models/user";
 
-export const POST = async(req) => {
+export const POST = async(req, res) => {
     try {
         // parse the request body
         const { promptId, userId } = req.json();
@@ -18,19 +18,23 @@ export const POST = async(req) => {
 
         // check if prompt exists
         if(!prompt) {
-            return new Response(JSON.stringify({ message: "Prompt not found" }), { status: 400 })
+            res.status(400).json({message: "Prompt not found"})
         }
 
         // check if user exists
         if(!user) {
-            return new Response(JSON.stringify({ message: "User not found" }), { status: 400 })
+            res.status(400).json({message: "User not found"})
         }
 
+        // check if user liked prompt or not
        if (!user.likedPrompts.include(promptId)) {
         
             // add prompt to the user's likedPrompt array
             user.likedPrompts.push(promptId)
             await user.save()
+
+             // Add the user to the prompt's likedByUsers array
+            prompt.likedBy.push(userId);
 
             // increament the likes 
             prompt.likes += 1
@@ -41,11 +45,11 @@ export const POST = async(req) => {
             await prompt.save()
 
             // send a success message 
-            return new Response(JSON.stringify({ message: "Likes Updated Successfully",  likes: prompt.likes }),  { status: 201 })
+            res.status(200).json({ message: "Prompt liked successfully", likes: prompt.likes });
        }
 
     } catch(error) {
         console.log(error)
-        return new Response(JSON.stringify({ message: "failed to update likes"}), { status: 500})
+        res.status(500).json({ message: "Failed to update likes "})
     };
 };

@@ -2,7 +2,7 @@ import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 import User from "@models/user";
 
-export const POST = async(req) => {
+export const POST = async(req, res) => {
     try {
         // parse the prompt Id
         const { promptId, userId } = await req.json()
@@ -17,37 +17,32 @@ export const POST = async(req) => {
 
         // prompt not found
         if(!prompt) {
-            return new Response(JSON.stringify({ message: "Prompt not found" }), { status: 400 })
+           res.status(400).json({message: "Prompt not found"})
         }
 
         // user not found 
         if(!user) {
-            return new Response(JSON.stringify({ message: "User not found" }), { status: 400 })
-        }
-
-        // check if user has already liked the prompt 
-        if(!user.likedPrompts.includes(promptId)) {
-            
-            // add the liked Prompts
-            user.likedPrompts.push(promptId)
-            await user.save()
+            res.status(400).json({message: "User not found"})
         }
         
+        // Check if the user has liked the prompt
+        if (user.likedPrompts.includes(promptId)) {
 
-        if ( prompt.likes <= 0 ) {
-            return new Response(JSON.stringify({ message: " Prompt count can't be less than 0"}), { status: 400 })
+            // Remove the prompt from the user's likedPrompts array
+            user.likedPrompts = user.likedPrompts.filter(id => id.toString() !== promptId.toString());
+            await user.save();
+            
+            // Remove the user from the prompt's likedByUsers array
+            prompt.likedByUsers = prompt.likedByUsers.filter(id => id.toString() !== userId.toString());
+            prompt.likes -= 1; // Decrement the like count
+            await prompt.save();
+    
+            res.status(200).json({ message: "Prompt unliked successfully", likes: prompt.likes });
         } else {
-            prompt.likes -=1
-
-            // save the model
-            await prompt.save()
-
-            return new Response(JSON.stringify({ message: "Likes Updated Successfully",  likes: prompt.likes }),  { status: 201 })
+            res.status(400).json({ message: "Prompt not liked yet" });
         }
-
-
     } catch (error) {
         console.log(error)
-        return new Response(JSON.stringify({ message: "failed to update likes"}), { status: 500})
+        res.status(500).json({ message: "Failed to update likes "})
     }
 }
