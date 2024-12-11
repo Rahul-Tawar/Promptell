@@ -38,6 +38,12 @@ const PromptSchema=new Schema({
          ref: 'User'
        }
     ],
+    savedBy: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 })
 
 const Prompt = models.Prompt || model('Prompt', PromptSchema)
