@@ -46,21 +46,13 @@ const Feed = () => {
 }
 
 const PromptCardList = ({data, handleTagClick}) => {
-  const onlike = () => {
-    alert('Liked')
-  };
 
-  const onCopy = () => {
-    alert('Copied')
-  };
   return (
     <div className='mt-15'>
     {data.map((post) => (
         <PromptCard
           key={post._id}
           prompt={post}
-          onlike={onlike}
-          onCopy={onCopy}
         />
       ))}
     </div>  
