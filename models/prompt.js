@@ -4,11 +4,11 @@ const PromptSchema=new Schema({
     creator: {
         type:Schema.Types.ObjectId,
         ref:'User',
-        required:[true, 'Creator is required'],
+        required:[true, 'Creator is required']
     },
     prompt: {
         type:String,
-        required:[true, 'Prompt is required'],
+        required:[true, 'Prompt is required']
     },
     tag: {  
         type:String,
@@ -16,21 +16,21 @@ const PromptSchema=new Schema({
     },
     title: {
         type:String,
-        maxlength:50,
+        maxlength:50
     },
     likes: {
         type:Number,
-        default: 0,
+        default: 0
     },
     createdAt: {
-        type:Date,
+        type:Date
     },
     updatedAt: {
-        type: Date,
+        type: Date
     },
     saves: {
         type: Schema.Types.ObjectId,
-        default: 0,
+        ref: 'User'
     },
     likedBy: [
        {
