@@ -1,11 +1,63 @@
-import React, {useState} from 'react';
-import { Heart, Copy, CheckCheck } from 'lucide-react';
+'use client'
+
+import React, { useState } from 'react';
+import { Heart, Copy, CheckCheck, Bookmark, Share2 } from 'lucide-react';
 import { UserAvatar } from '@components/userAvatar';
 import { useCopyFeedback } from '@hooks/useCopyPrompt';
+import { useSession } from '@node_modules/next-auth/react';
 
-export default function PromptCard({ prompt, onLike, onCopy }) {
+export default function PromptCard({ prompt }) {
   const { copied, handleCopy } = useCopyFeedback(() => onCopy(prompt.content));
-  const [likeCount, setLikeCount] = useState(0)
+  const [likeCount, setLikeCount] = useState(prompt.likes)
+  const [isSaved, setIsSaved] = useState(false)
+  const [saveCount, setSaveCount] = useState(10)
+  const {data: session} = useSession()
+  
+
+  // like and unlike the prompt
+  const handleLike = async(prompt) => {
+    try {
+      console.log(prompt)
+      const response = await fetch('/api/prompt/likes/increment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+            promptId: prompt?._id,
+            userId: session?.user?.id
+        }),
+    });
+
+      // parsing the response object 
+      if(!response.ok) {
+        throw new Error(`HTTP error, status ${response.status}`)
+      } else {
+        // destructing the likes
+        const {likes} = response.json()
+        console.log(likes)
+        setLikeCount(likes)
+      }
+     
+    } catch (error) {
+      console.log(error, "Failed to call API")
+    }
+  }
+
+  // save and unsave the prompt
+  const handleSaveClick = async(prompt) => {
+    // save logic
+  }
+
+  // sharing the prompt 
+  const onShare = async(prompt) => {
+    // share logic
+  }
+
+  // copy prompt 
+  const onCopy = (prompt) => {
+    // copy logic
+  }
 
   return (
     <div className="relative group">
@@ -26,8 +78,9 @@ export default function PromptCard({ prompt, onLike, onCopy }) {
           <div className="flex items-center justify-between text-gray-400">
             <span className="text-sm">{new Date("2024-10-10").toLocaleDateString()}</span>
             <div className="flex gap-4">
+              {/* Like Prompt */}
               <button
-                onClick={() => onLike}
+                onClick={() => handleLike(prompt)}
                 className={`flex items-center gap-1 ${
                   prompt.isLiked ? 'text-pink-500' : 'text-gray-400'
                 } hover:text-pink-500 transition-colors`}
@@ -35,9 +88,20 @@ export default function PromptCard({ prompt, onLike, onCopy }) {
                 <Heart size={18} fill={prompt.isLiked ? 'currentColor' : 'none'} />
                 <span>{likeCount}</span>
               </button>
+              {/* Save Prompt */}
+              <button
+                onClick={handleSaveClick}
+                className={`flex items-center gap-1${
+                  isSaved ? 'text-pink-500' : 'text-gray-400'
+                } hover:text-pink-500 transition-colors ` }
+                title={isSaved ? 'Remove from saved' : 'Save prompt'}
+              >
+                <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
+                <span>{saveCount}</span>
+              </button>
               <button
                 onClick={handleCopy}
-                className="hover:text-blue-400 transition-colors"
+                className="hover:text-blue-400 transition-colors absolute top-0 right-0"
                 title="Copy prompt"
               >
                 {copied ? (
@@ -45,6 +109,14 @@ export default function PromptCard({ prompt, onLike, onCopy }) {
                 ) : (
                   <Copy size={18} />
                 )}
+              </button>
+              {/* Share button */}
+              <button
+                onClick={() => onShare(prompt.description, prompt.title)}
+                className="hover:text-blue-400 transition-colors"
+                title="Share prompt"
+              >
+                <Share2 size={18} />
               </button>
             </div>
           </div>
