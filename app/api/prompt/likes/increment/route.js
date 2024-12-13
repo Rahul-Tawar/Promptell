@@ -2,33 +2,35 @@ import { connectToDB } from "@utils/database";
 import Prompt from "@models/prompt";
 import User from "@models/user";
 
-export const POST = async(req, res) => {
+export const POST = async(req) => {
     try {
         // parse the request body
-        const { promptId, userId } = req.json();
-
+        const { promptId, userId } = await req.json()
+        console.log(promptId, userId)
         // db connection
         await connectToDB();
 
         // find the prompt
         const prompt = await Prompt.findById(promptId);
+        console.log(prompt)
 
         // find the user 
         const user = await User.findById(userId)
+        console.log(user)
 
         // check if prompt exists
         if(!prompt) {
-            res.status(400).json({message: "Prompt not found"})
+            return new Response(JSON.stringify({ message: "Prompt not found"}), {status: 400})
         }
 
         // check if user exists
         if(!user) {
-            res.status(400).json({message: "User not found"})
+            return new Response(JSON.stringify({ message: "User not found"}), {status: 400}) 
         }
 
         // check if user liked prompt or not
-       if (!user.likedPrompts.include(promptId)) {
-        
+       if (!user.likedPrompts.includes(promptId)) {
+            console.log('main logic mounted')
             // add prompt to the user's likedPrompt array
             user.likedPrompts.push(promptId)
             await user.save()
@@ -45,11 +47,14 @@ export const POST = async(req, res) => {
             await prompt.save()
 
             // send a success message 
-            res.status(200).json({ message: "Prompt liked successfully", likes: prompt.likes });
+            return new Response(JSON.stringify({ message: "Prompt liked sucessfully", likes: prompt.likes}), {status: 201})
+       } else {
+        console.log("User has already liked the Prmompt")
+        return new Response(JSON.stringify({message: "User has already liked the prompt"}), {status: 400})
        }
 
     } catch(error) {
         console.log(error)
-        res.status(500).json({ message: "Failed to update likes "})
+        return new Response(JSON.stringify({ message: "Error while liking prompt"}), {status: 500})
     };
 };
