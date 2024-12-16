@@ -1,23 +1,27 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useOptimistic } from 'react';
 import { Heart, Copy, CheckCheck, Bookmark, Share2 } from 'lucide-react';
 import { UserAvatar } from '@components/userAvatar';
 import { useCopyFeedback } from '@hooks/useCopyPrompt';
 import { useSession } from '@node_modules/next-auth/react';
 
 export default function PromptCard({ prompt }) {
+  const [optimisticLikes, setOptimisticLikes] = useOptimistic(prompt?.likes, (current, delta) => current + delta);
+  const [optimisticSaves, setOptimisticSaves] = useOptimistic(prompt?.saves, (current, delta) => current + delta);
   const { copied, handleCopy } = useCopyFeedback(() => onCopy(prompt.content));
-  const [likeCount, setLikeCount] = useState(prompt.likes)
+  const [likeCount, setLikeCount] = useState(prompt?.likes)
   const [isSaved, setIsSaved] = useState(false)
-  const [saveCount, setSaveCount] = useState(10)
+  const [saveCount, setSaveCount] = useState(prompt?.saves)
   const {data: session} = useSession()
   
 
-  // like and unlike the prompt
+  // handler functions
+
+  // like the prompt
   const handleLike = async(prompt) => {
+    setOptimisticLikes(prompt?.likes+1)
     try {
-      console.log(prompt)
       const response = await fetch('/api/prompt/likes/increment', {
         method: 'POST',
         headers: {
@@ -27,27 +31,103 @@ export default function PromptCard({ prompt }) {
             promptId: prompt?._id,
             userId: session?.user?.id
         }),
-    });
-
-      // parsing the response object 
+      });
       if(!response.ok) {
         throw new Error(`HTTP error, status ${response.status}`)
       } else {
-        // destructing the likes
         const {likes} = response.json()
         console.log(likes)
-        setLikeCount(likes)
       }
      
     } catch (error) {
       console.log(error, "Failed to call API")
+      setOptimisticLikes(prompt?.likes-1)
     }
   }
 
-  // save and unsave the prompt
-  const handleSaveClick = async(prompt) => {
-    // save logic
+  // unlike the prompt
+  const handleUnlike = async(prompt) => {
+    setOptimisticLikes(prompt?.likes-1)
+    try {
+      const response = await fetch('/api/prompt/likes/decrement', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+            promptId: prompt?._id,
+            userId: session?.user?.id
+        }),
+      });
+      if(!response.ok) {
+        throw new Error(`HTTP error, status ${response.status}`)
+      } else {
+        const {likes} = response.json()
+        console.log(likes)
+      }
+     
+    } catch (error) {
+      console.log(error, "Failed to call API")
+      setOptimisticLikes(prompt?.likes+1)
+    }
   }
+  
+  // save and unsave the prompt
+
+  // save the prompt
+  const handleSave = async(prompt) => {
+    setOptimisticSaves(prompt?.saves+1)
+    try {
+      const response = await fetch('/api/prompt/saves/increment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+            promptId: prompt?._id,
+            userId: session?.user?.id
+        }),
+      });
+      if(!response.ok) {
+        throw new Error(`HTTP error, status ${response.status}`)
+      } else {
+        const { saves } = console.log(saves)
+        console.log(saves)
+      }
+     
+    } catch (error) {
+      console.log(error, "Failed to call API")
+      setOptimisticSaves(prompt?.saves-1)
+    }
+  }
+
+  // unsave the prompt
+  const handleUnsaves = async(prompt) => {
+    setOptimisticLikes(prompt?.saves-1)
+    try {
+      const response = await fetch('/api/prompt/saves/decrement', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({
+            promptId: prompt?._id,
+            userId: session?.user?.id
+        }),
+      });
+      if(!response.ok) {
+        throw new Error(`HTTP error, status ${response.status}`)
+      } else {
+        const {likes} = response.json()
+        console.log(likes)
+      }
+     
+    } catch (error) {
+      console.log(error, "Failed to call API")
+      setOptimisticSaves(prompt?.saves+1)
+    }
+  }
+
 
   // sharing the prompt 
   const onShare = async(prompt) => {
@@ -86,7 +166,7 @@ export default function PromptCard({ prompt }) {
                 } hover:text-pink-500 transition-colors`}
               >
                 <Heart size={18} fill={prompt.isLiked ? 'currentColor' : 'none'} />
-                <span>{likeCount}</span>
+                <span>{optimisticLikes}</span>
               </button>
               {/* Save Prompt */}
               <button
@@ -97,7 +177,7 @@ export default function PromptCard({ prompt }) {
                 title={isSaved ? 'Remove from saved' : 'Save prompt'}
               >
                 <Bookmark size={18} fill={isSaved ? 'currentColor' : 'none'} />
-                <span>{saveCount}</span>
+                <span>{optimisticSaves}</span>
               </button>
               <button
                 onClick={handleCopy}
