@@ -2,24 +2,24 @@ import {Schema, SchemaType, model, models} from "mongoose";
 
 const PromptSchema=new Schema({
     creator: {
-        type:Schema.Types.ObjectId,
-        ref:'User',
-        required:[true, 'Creator is required']
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true, 'Creator is required']
     },
     prompt: {
-        type:String,
-        required:[true, 'Prompt is required']
+        type: String,
+        required: [true, 'Prompt is required']
     },
     tag: {  
-        type:String,
-        required:[true, 'Tag is also required']
+        type: String,
+        required: [true, 'Tag is also required']
     },
     title: {
-        type:String,
-        maxlength:50
+        type: String,
+        maxlength: 50
     },
     likes: {
-        type:Number,
+        type: Number,
         default: 0
     },
     createdAt: {
@@ -29,8 +29,8 @@ const PromptSchema=new Schema({
         type: Date
     },
     saves: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
+        type: Number,
+        default: 0
     },
     likedBy: [
        {
